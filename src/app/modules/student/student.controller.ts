@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import httpStatus from 'http-status';
-import sendResponse from '../../utils/sendResponse';
 import { StudentServices } from './student.service';
+import sendResponse from '../../utils/sendResponse';
 
 const getSingleStudent = async (
   req: Request,
@@ -15,9 +15,10 @@ const getSingleStudent = async (
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: 'Student is retrieved succesfully',
+      message: 'Student is retrieved Successfully',
       data: result,
     });
+   
   } catch (err) {
     next(err);
   }
@@ -37,6 +38,7 @@ const getAllStudents = async (
       message: 'Student are retrieved succesfully',
       data: result,
     });
+    
   } catch (err) {
     next(err);
   }
@@ -54,7 +56,7 @@ const deleteStudent = async (
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: 'Student is deleted succesfully',
+      message: 'Student is deleted Successfully',
       data: result,
     });
   } catch (err) {

@@ -6,3 +6,4 @@ export type TUser = {
     status: 'in-progress' | 'blocked';
     isAdmin:boolean;
 }
+
