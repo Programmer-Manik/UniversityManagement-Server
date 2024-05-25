@@ -20,5 +20,3 @@ export default sendResponse;
 
 
 
-
-// c:\Apollo-Three\UniversityManagement\src\app\modules\student\student.controller.ts
