@@ -1,3 +1,4 @@
+
 import cors from 'cors';
 import express, { Application,  Request, Response,  } from 'express';
 import globalErrorHandler from './app/middlewares/globalErrorhandler';
