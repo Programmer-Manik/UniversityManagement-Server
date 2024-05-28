@@ -1,6 +1,6 @@
 
 import cors from 'cors';
-import express, { Application,  Request, Response,  } from 'express';
+import express, { Application,} from 'express';
 import globalErrorHandler from './app/middlewares/globalErrorhandler';
 import notFound from './app/middlewares/notFound';
 import router from './app/routes';
@@ -15,13 +15,6 @@ app.use(cors());
 app.use('/api/v1/', router);
 
 
-const getAController = (req: Request, res: Response) => {
-  const a = 10;
-  res.send(a);
-};
-
-
-app.get('/', getAController);
 
 app.use(globalErrorHandler)
 
