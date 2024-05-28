@@ -11,7 +11,7 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
   // create a user object
   const userData: Partial<TUser> = {};
 
-  //if password is not given , use deafult password
+  //if password is not given , use default password
   userData.password = password || (config.default_password as string);
 
   //set student role
@@ -25,7 +25,7 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
    //set manually generated it
   // userData.id = '2030100001';
   //set  generated id
-  userData.id = await generateStudentId(admissionSemester);
+  userData.id = await generateStudentId(admissionSemester); //);
 
 
   // create a user
