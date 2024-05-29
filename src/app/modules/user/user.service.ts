@@ -8,15 +8,13 @@ import { User } from './user.model';
 import { generateStudentId } from './user.utils';
 
 const createStudentIntoDB = async (password: string, payload: TStudent) => {
+  // console.log(payload)
   // create a user object
   const userData: Partial<TUser> = {};
-
   //if password is not given , use default password
   userData.password = password || (config.default_password as string);
-
   //set student role
   userData.role = 'student';
-
   //year semester Code 4 digits number 
   // find academic semester
   const admissionSemester = await  AcademicSemester.findById(
@@ -25,11 +23,15 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
    //set manually generated it
   // userData.id = '2030100001';
   //set  generated id
-  userData.id = await generateStudentId(admissionSemester); //);
+  if (!admissionSemester) {
+    throw new Error('Admission semester not found');
+  }
+  userData.id = await generateStudentId(admissionSemester); 
 
 
   // create a user
   const newUser = await User.create(userData);
+  // console.log(newUser, userData);
 
   //create a student
   if (Object.keys(newUser).length) {
