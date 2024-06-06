@@ -4,6 +4,7 @@ import { Student } from './student.model';
 import { User } from '../user/user.model';
 import AppError from '../../Errors/AppError';
 import httpStatus from 'http-status';
+import { TStudent } from './student.interface';
 
 const getAllStudentsFromDB = async () => {
   const result = await Student.find().populate('admissionSemester').populate({
@@ -19,7 +20,7 @@ const getAllStudentsFromDB = async () => {
 const getSingleStudentFromDB = async (id: string) => {
   // const ObjectId = mongoose.Types.ObjectId;
   // const result = await Student.aggregate([{ $match: { _id: new ObjectId(id) } }]);
-  const result = await Student.findById(id).populate('admissionSemester').populate({
+  const result = await Student.findOne({id}).populate('admissionSemester').populate({
     path: 'academicDepartment',
     populate: {
       path: 'academicFaculty',
@@ -29,13 +30,18 @@ const getSingleStudentFromDB = async (id: string) => {
   return result;
 };
 
+const updateStudentIntoDB = async (id: string, payload:Partial<TStudent>) => {
+    const result = await Student.findOneAndUpdate({id}, payload)
+    return result;
+}
+
 const deleteStudentFromDB = async (id: string) => {
   const session = await mongoose.startSession();
   try{
     session.startTransaction();
 
     const deleteStudent = await Student.findOneAndUpdate(
-      { id},
+      {id},
       {isDeleted: true},
       {new:true, session}
     );
@@ -54,18 +60,18 @@ const deleteStudentFromDB = async (id: string) => {
     }
     await session.commitTransaction();
     await  session.endSession();
-  }catch(err:any){
+    return deleteStudent;
+  }catch(err){
     await session.abortTransaction();
     await session.endSession();
-    throw new Error(err);
-  };
+    throw new Error('Failed to delete student');
 
-  const result = await Student.updateOne({ id }, { isDeleted: true });
-  return result;
 };
+}
 
 export const StudentServices = {
   getAllStudentsFromDB,
   getSingleStudentFromDB,
+  updateStudentIntoDB,
   deleteStudentFromDB,
 };
