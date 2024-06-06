@@ -6,6 +6,7 @@ import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
 import { ZodError, ZodIssue } from 'zod';
 import { TErrorSource } from '../interface/error';
 import config from '../config';
+import handleZoneError from '../Errors/handleZodError';
 
 // const globalErrorHandler = (
 //   err: any,
@@ -40,28 +41,16 @@ const globalErrorHandler: ErrorRequestHandler = (
     },
   ];
 
-  const handleZoneError = (err:ZodError) => {
-    const errorSource:TErrorSource  = err.issues.map((issue:ZodIssue) =>{
-      return {
-        path: issue.path[issue.path.length - 1],
-        message:issue.message,
-      }
-    })
-    const statusCode = 400;
-    return{
-        statusCode,
-        message:'Zod validation error',
-        errorSource
-    }
-  };
-
-
   if(err instanceof ZodError){
     const simplifiedError = handleZoneError(err)
     statusCode = simplifiedError?.statusCode;
     message = simplifiedError?.message;
     errorSource = simplifiedError?.errorSource;
-
+  }else if(err?.name === 'validationError'){
+    const simplifiedError = handleZoneError(err)
+    statusCode = simplifiedError?.statusCode
+    message = simplifiedError?.message
+    errorSource = simplifiedError?.errorSource
   }
 //ultimate returns
   return res.status(statusCode).json({
