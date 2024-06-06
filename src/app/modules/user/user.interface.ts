@@ -5,5 +5,6 @@ export type TUser = {
     role:'admin' | 'faculty' | 'student';
     status: 'in-progress' | 'blocked';
     isAdmin:boolean;
+    isDeleted:boolean;
 }
 

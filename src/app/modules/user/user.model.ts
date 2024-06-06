@@ -13,6 +13,10 @@ const userSchema = new Schema<TUser>(
     default:"in-progress"
      },
     isAdmin: { type: Boolean, default: false },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true },
 );

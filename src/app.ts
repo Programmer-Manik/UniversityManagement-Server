@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(cors());
 
 
-//testing
+// testing
 const test = async (_req:Request, res:Response) => {
     const a = 10 ;
     res.send(a);
