@@ -7,32 +7,115 @@ import httpStatus from 'http-status';
 import { TStudent } from './student.interface';
 
 const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
+  // console.log('base query', query);
+    const queryObj = {...query}
   //{email:{$regex: searchTerm, $options:i}}
   // { presentAddress:{$regex: query.searchTerm, $options:i}}
   // {name.firstName:{$regex: query.searchTerm, $options:i}
+  const studentSearchFields = ['email', 'name.lastName', 'presentAddress'];
   let searchTerm = '';
   if (query?.searchTerm) {
     searchTerm = query?.searchTerm as string;
   }
-
-  const result = await Student.find({
-    $or: ['email', 'name.lastName', 'presentAddress'].map((field) => ({
+  const searchQuery = Student.find({
+    $or:studentSearchFields.map((field) => ({
       [field]: {
         $regex: searchTerm,
         $options: 'i',
       },
     })),
   })
+
+  //filtering 
+  const excludeFields = ['searchTerm', 'sort', 'limit', 'page', 'fields'];
+  excludeFields.forEach((el) => delete queryObj[el]);  // DELETING THE FIELDS SO THAT IT CAN'T MATCH OR FILTER EXACTLY
+
+
+//   const result = await searchQuery.find(queryObj)
+//     .populate('admissionSemester')
+//     .populate({
+//       path: 'academicDepartment',
+//       populate: {
+//         path: 'academicFaculty',
+//         model: 'AcademicFaculty',
+//       },
+//     });
+//   return result;
+// };
+
+
+
+  const filterQuery = searchQuery
+    .find(queryObj)
     .populate('admissionSemester')
     .populate({
       path: 'academicDepartment',
       populate: {
         path: 'academicFaculty',
-        model: 'AcademicFaculty',
       },
     });
-  return result;
-};
+
+
+
+
+ // SORTING FUNCTIONALITY:
+
+ let sort = '-createdAt'; // SET DEFAULT VALUE 
+ 
+ // IF sort  IS GIVEN SET IT
+  
+   if (query.sort) {
+    sort = query.sort as string;
+  }
+
+   const sortQuery = filterQuery.sort(sort);
+  // return sortQuery;
+
+
+    // PAGINATION FUNCTIONALITY:
+
+    let page = 1; // SET DEFAULT VALUE FOR PAGE 
+    let limit = 1; // SET DEFAULT VALUE FOR LIMIT 
+    let skip = 0; // SET DEFAULT VALUE FOR SKIP
+ 
+ 
+   // IF limit IS GIVEN SET IT
+   
+   if (query.limit) {
+     limit = Number(query.limit);
+   }
+ 
+   // IF page IS GIVEN SET IT
+ 
+   if (query.page) {
+     page = Number(query.page);
+     skip = (page - 1) * limit;
+   }
+
+   const paginateQuery = sortQuery.skip(skip);
+ 
+   const limitQuery = sortQuery.limit(limit);
+ 
+  
+   
+  //  // FIELDS LIMITING FUNCTIONALITY:
+ 
+  //  // HOW OUR FORMAT SHOULD BE FOR PARTIAL MATCH 
+ 
+  //  fields: 'name,email'; // WE ARE ACCEPTING FROM REQUEST
+  //  fields: 'name email'; // HOW IT SHOULD BE 
+ 
+  //  let fields = '-__v'; // SET DEFAULT VALUE
+ 
+  //  if (query.fields) {
+  //    fields = (query.fields as string).split(',').join(' ');
+ 
+  //  }
+ 
+  //  const fieldQuery = await limitQuery.select(fields);
+ 
+  //  return fieldQuery;
+}
 
 const getSingleStudentFromDB = async (id: string) => {
   // const ObjectId = mongoose.Types.ObjectId;
