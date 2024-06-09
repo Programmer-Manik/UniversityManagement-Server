@@ -29,6 +29,8 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
   //filtering 
   const excludeFields = ['searchTerm', 'sort', 'limit', 'page', 'fields'];
   excludeFields.forEach((el) => delete queryObj[el]);  // DELETING THE FIELDS SO THAT IT CAN'T MATCH OR FILTER EXACTLY
+console.log({query}, {queryObj})
+
 
 
 //   const result = await searchQuery.find(queryObj)
@@ -94,27 +96,28 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
 
    const paginateQuery = sortQuery.skip(skip);
  
-   const limitQuery = sortQuery.limit(limit);
+   const limitQuery = paginateQuery.limit(limit);
  
+
   
    
-  //  // FIELDS LIMITING FUNCTIONALITY:
+   // FIELDS LIMITING FUNCTIONALITY:
  
-  //  // HOW OUR FORMAT SHOULD BE FOR PARTIAL MATCH 
+   // HOW OUR FORMAT SHOULD BE FOR PARTIAL MATCH 
  
   //  fields: 'name,email'; // WE ARE ACCEPTING FROM REQUEST
   //  fields: 'name email'; // HOW IT SHOULD BE 
  
-  //  let fields = '-__v'; // SET DEFAULT VALUE
+   let fields = '-__v'; // SET DEFAULT VALUE
  
-  //  if (query.fields) {
-  //    fields = (query.fields as string).split(',').join(' ');
+   if (query.fields) {
+     fields = (query.fields as string).split(',').join(' ');
  
-  //  }
+   }
  
-  //  const fieldQuery = await limitQuery.select(fields);
+   const fieldQuery = await limitQuery.select(fields);
  
-  //  return fieldQuery;
+   return fieldQuery;
 }
 
 const getSingleStudentFromDB = async (id: string) => {
