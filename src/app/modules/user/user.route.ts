@@ -4,6 +4,7 @@ import validateRequest from '../../middlewares/validateRequest';
 import { createStudentValidationSchema } from '../student/student.validation';
 import { createAdminValidationSchema } from '../Admin/admin.validation';
 import { createFacultyValidationSchema } from '../Faculty/faculty.validation';
+import auth from '../../middlewares/auth';
 
 
 
@@ -18,6 +19,7 @@ router.post(
 
 router.post(
   '/create-faculty',
+  auth(),
   validateRequest(createFacultyValidationSchema),
   UserControllers.createFaculty,
 );
