@@ -42,8 +42,21 @@ const createAdmin = catchAsync(async (req, res) => {
   });
 });
 
+
+const getMe = catchAsync(async (req, res) => {
+  const result = await UserServices.getMeDB(req.user);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User is retrieved succesfully',
+    data: result,
+  });
+});
+
 export const UserControllers = {
   createStudent,
   createFaculty,
   createAdmin,
+  getMe
 };
