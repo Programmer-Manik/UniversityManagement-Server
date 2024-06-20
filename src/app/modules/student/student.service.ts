@@ -109,21 +109,27 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
 
   //    return fieldQuery;
 
-  const studentsQuery = new QueryBuilder(Student.find().populate('admissionSemester').populate({
-    path: 'academicDepartment',
-    populate: {
-      path: 'academicFaculty',
-      // model: 'AcademicFaculty',
-    },
-  }), query)
+  const studentsQuery = new QueryBuilder(
+    Student.find()
+      .populate('user')
+      .populate('admissionSemester')
+      .populate({
+        path: 'academicDepartment',
+        populate: {
+          path: 'academicFaculty',
+          // model: 'AcademicFaculty',
+        },
+      }),
+    query,
+  )
     .search(studentSearchableFields)
     .filter()
     .sort()
     .paginate()
     .fields();
 
-    const result = await studentsQuery.modelQuery;
-    return result;
+  const result = await studentsQuery.modelQuery;
+  return result;
 };
 
 const getSingleStudentFromDB = async (id: string) => {
@@ -164,7 +170,7 @@ const updateStudentIntoDB = async (id: string, payload: Partial<TStudent>) => {
     }
   }
 
-  const result = await Student.findByIdAndUpdate( id , modifiedUpdatedData, {
+  const result = await Student.findByIdAndUpdate(id, modifiedUpdatedData, {
     new: true,
     runValidators: true,
   });
@@ -177,7 +183,7 @@ const deleteStudentFromDB = async (id: string) => {
     session.startTransaction();
 
     const deleteStudent = await Student.findByIdAndUpdate(
-       id ,
+      id,
       { isDeleted: true },
       { new: true, session },
     );
