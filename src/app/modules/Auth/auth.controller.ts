@@ -36,8 +36,6 @@ const changePassword = catchAsync(async (req, res) => {
   });
 });
 
-
-
 const refreshToken = catchAsync(async (req, res) => {
   const { refreshToken } = req.cookies;
   const result = await AuthServices.refreshToken(refreshToken);
@@ -61,7 +59,6 @@ const forgetPassword = catchAsync(async (req, res) => {
   });
 });
 
-
 const resetPassword = catchAsync(async (req, res) => {
   const token = req.headers.authorization;
 
@@ -69,10 +66,12 @@ const resetPassword = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Password reset successful!',
+    message: 'Password reset succesful!',
     data: result,
   });
 });
+
+
 
 
 export const AuthControllers = {
