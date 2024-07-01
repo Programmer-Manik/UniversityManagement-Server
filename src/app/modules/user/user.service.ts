@@ -178,6 +178,7 @@ const createAdminIntoDB = async (
   password: string,
   payload: TAdmin,
 ) => {
+
   // create a user object
   const userData: Partial<TUser> = {};
 
