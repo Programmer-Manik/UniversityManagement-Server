@@ -11,6 +11,7 @@ import { OfferedCourse } from './OfferedCourse.model';
 import AppError from '../../Errors/AppError';
 import { AcademicFaculty } from '../academicFaculty/acdemicFaculty.model';
 import { hasTimeConflict } from './OfferedCourse.utils';
+import { Student } from '../student/student.model';
 
 
 const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
@@ -141,8 +142,26 @@ const getAllOfferedCoursesFromDB = async (query: Record<string, unknown>) => {
     .paginate()
     .fields();
 
+  
   const result = await offeredCourseQuery.modelQuery;
-  return result;
+  const meta = await offeredCourseQuery.countTotal();
+  return {
+    meta,
+    result,
+  }
+};
+
+const getMyOfferedCoursesFromDB = async (userId:string) => {
+  //  console.log(userId)
+  const student = await Student.findOne({id:userId})
+  // find the students
+  if(!student){
+    throw new AppError(httpStatus.NOT_FOUND, "User is not found")
+  }
+  // find current ongoing semester
+  const currentOngoingSemester =  await  SemesterRegistration.findOne({status:'ONGOING'})
+  return currentOngoingSemester ;
+  
 };
 
 const getSingleOfferedCourseFromDB = async (id: string) => {
@@ -253,6 +272,7 @@ const deleteOfferedCourseFromDB = async (id: string) => {
 export const OfferedCourseServices = {
   createOfferedCourseIntoDB,
   getAllOfferedCoursesFromDB,
+  getMyOfferedCoursesFromDB,
   getSingleOfferedCourseFromDB,
   deleteOfferedCourseFromDB,
   updateOfferedCourseIntoDB,
