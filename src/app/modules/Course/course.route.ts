@@ -32,13 +32,29 @@ router.patch(
   CourseControllers.updateCourse,
 );
 
-router.delete('/:id', auth(USER_ROLE.admin, USER_ROLE.superAdmin), CourseControllers.deleteCourse);
+router.delete(
+  '/:id',
+  auth(USER_ROLE.admin, USER_ROLE.superAdmin),
+  CourseControllers.deleteCourse,
+);
 
 router.put(
   '/:courseId/assign-faculties',
   auth(USER_ROLE.admin, USER_ROLE.superAdmin),
   validateRequest(CourseValidations.facultiesWithCourseValidationSchema),
   CourseControllers.assignFacultiesWithCourse,
+);
+
+
+router.get(
+  '/:courseId/get-faculties',
+  auth(
+    USER_ROLE.admin,
+    USER_ROLE.superAdmin,
+    USER_ROLE.faculty,
+    USER_ROLE.student,
+  ),
+  CourseControllers.getFacultiesWithCourse,
 );
 
 router.delete(
@@ -48,12 +64,15 @@ router.delete(
   CourseControllers.removeFacultiesFromCourse,
 );
 
-router.get('/', auth(
-  USER_ROLE.admin,
-  USER_ROLE.superAdmin,
-  USER_ROLE.faculty,
-  USER_ROLE.student,
-),
- CourseControllers.getAllCourses);
+router.get(
+  '/',
+  auth(
+    USER_ROLE.admin,
+    USER_ROLE.superAdmin,
+    USER_ROLE.faculty,
+    USER_ROLE.student,
+  ),
+  CourseControllers.getAllCourses,
+);
 
 export const CourseRoutes = router;
