@@ -8,6 +8,7 @@ import { createFacultyValidationSchema } from '../Faculty/faculty.validation';
 import { USER_ROLE } from './user.constant';
 import { UserControllers } from './user.controller';
 import { UserValidation } from './user.validation';
+import { createStudentValidationSchema } from '../student/student.validation';
 
 const router = express.Router();
 
@@ -19,7 +20,7 @@ router.post(
     req.body = JSON.parse(req.body.data);
     next();
   },
-  validateRequest(createAdminValidationSchema),
+  validateRequest(createStudentValidationSchema),
   UserControllers.createStudent,
 );
 
