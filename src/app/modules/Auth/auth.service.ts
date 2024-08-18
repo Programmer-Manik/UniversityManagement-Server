@@ -133,7 +133,7 @@ const refreshToken = async (token: string) => {
     throw new AppError(httpStatus.FORBIDDEN, 'This user is deleted !');
   }
 
-  checking if the user is blocked
+  // checking if the user is blocked
   const userStatus = user?.status;
 
   if (userStatus === 'blocked') {
